@@ -57,3 +57,13 @@ def get_preprocessed_feature_names(preprocessor) -> np.ndarray:
     return np.asarray(names, dtype=object)
 
 
+
+
+def display_feature_name(encoded_name: str) -> str:
+    """Readable label for plots: 'categorical__neighbourhood_Tribeca' -> 'neighbourhood = Tribeca'."""
+    branch, _, name = encoded_name.partition("__")
+    if branch == "categorical":
+        for column in CATEGORICAL_FEATURES:
+            if name.startswith(f"{column}_"):
+                return f"{column} = {name[len(column) + 1:]}"
+    return name or encoded_name
