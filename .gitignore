@@ -4,5 +4,7 @@ __pycache__/
 .venv/
 .env
 .ipynb_checkpoints/
+.matplotlib/
+.jupyter_runtime/
 data/raw/*.csv
 reports/*.csv

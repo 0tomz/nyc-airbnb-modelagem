@@ -33,6 +33,7 @@
       <a href="#distribuicoes">Distribuições</a>
       <a href="#relacoes">Relações</a>
       <a href="#preparacao">Preparação</a>
+      <a href="#aps2">APS2</a>
       <a href="#conclusao">Conclusão</a>
     </nav>
     <a class="download-link" href="Meu_projeto_EDA_ML_revisado%20(2).ipynb" download>Baixar notebook</a>
@@ -404,6 +405,191 @@
           claramente faixas de preço, o pipeline final mantém as variáveis
           transformadas em vez de substituir tudo por PCA.
         </p>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="aps2">
+      <div class="page-shell">
+        <div class="section-heading">
+          <p class="eyebrow">05 / APS2 · Regressão</p>
+          <h2>Do pré-processamento à previsão de preços.</h2>
+          <p>
+            A APS2 reutiliza o pré-processador da APS1 e compara modelos por
+            validação cruzada. O holdout de teste foi reservado para a avaliação
+            final, com MAE medido em dólares. Prazo informado para a APS2:
+            30/10/2026.
+          </p>
+        </div>
+
+        <div class="aps2-metrics" aria-label="Resumo dos resultados da APS2">
+          <article>
+            <span>Melhor MAE CV</span>
+            <strong>US$ 56,12</strong>
+            <small>Random Forest + <code>log1p(price)</code></small>
+          </article>
+          <article>
+            <span>MAE no teste</span>
+            <strong>US$ 57,78</strong>
+            <small>9.777 anúncios reservados</small>
+          </article>
+          <article>
+            <span>Impacto do log no alvo</span>
+            <strong>−11,95%</strong>
+            <small>redução de US$ 7,62 no MAE CV</small>
+          </article>
+          <article>
+            <span>Validação por linha</span>
+            <strong>24,5%</strong>
+            <small>dos hosts únicos no teste também aparecem no treino</small>
+          </article>
+        </div>
+
+        <div class="aps2-models">
+          <div class="aps2-models-copy">
+            <p class="eyebrow">Modelos · cinco folds</p>
+            <h3>Uma referência simples e dois modelos treinados.</h3>
+            <p>
+              A Random Forest teve o menor MAE entre os modelos iniciais. Após
+              transformar o alvo com <code>log1p</code> e retunar a floresta, o
+              MAE médio de validação caiu de US$ 63,74 para US$ 56,12. A busca e
+              a comparação usaram a mesma métrica e os mesmos folds.
+            </p>
+            <div class="feature-table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Modelo</th><th>Configuração selecionada</th><th>MAE CV ± desvio (US$)</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Dummy median</td><td>baseline</td><td>83,66 ± 1,36</td></tr>
+                  <tr><td>Ridge</td><td><code>alpha=100</code></td><td>70,78 ± 1,33</td></tr>
+                  <tr><td>Random Forest</td><td>120 árvores; folha mínima 8; atributos 0,5</td><td>63,74 ± 1,71</td></tr>
+                  <tr><td>Random Forest + <code>log1p(price)</code></td><td>120 árvores; folha mínima 1; profundidade 15</td><td>56,12</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="aps2-caption">
+              MAE menor indica menor erro absoluto médio. O score do teste não
+              participou da seleção de hiperparâmetros.
+            </p>
+          </div>
+          <figure>
+            <img src="reports/figures/aps2/aps2_model_comparison.png" alt="Comparação do MAE médio e desvio entre folds para Dummy, Ridge e Random Forest">
+            <figcaption>Comparação inicial no conjunto de treino, antes da transformação do alvo.</figcaption>
+          </figure>
+        </div>
+
+        <div class="aps2-evaluation">
+          <figure>
+            <img src="reports/figures/aps2/aps2_learning_curve.png" alt="Curva de aprendizado da Random Forest com o alvo transformado">
+            <figcaption>Curva de aprendizado do modelo selecionado; o eixo vertical mostra MAE em dólares.</figcaption>
+          </figure>
+          <div class="aps2-evaluation-copy">
+            <p class="eyebrow">Teste reservado</p>
+            <h3>O erro cresce muito nos preços mais altos.</h3>
+            <p>
+              No teste, o MAE geral foi de US$ 57,78. No decil de maior preço, o
+              MAE foi US$ 305,11 e o resíduo médio <code>real − previsto</code>
+              foi +US$ 301,59, indicando subestimação nessa faixa.
+            </p>
+            <figure>
+              <img src="reports/figures/aps2/aps2_test_diagnostics.png" alt="Preço real versus previsto, resíduos versus previsto e distribuição dos resíduos no teste">
+              <figcaption>Diagnósticos do holdout: real × previsto, resíduos e distribuição dos resíduos.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="aps2-interpretation">
+          <div class="section-heading">
+            <p class="eyebrow">Importância · explicabilidade</p>
+            <h3>Localização e tipo de acomodação aparecem entre os principais sinais.</h3>
+            <p>
+              A importância da floresta é relativa e a importância global SHAP
+              está na escala interna <code>log1p(price)</code>. Essas medidas
+              descrevem o modelo, não relações causais.
+            </p>
+          </div>
+          <div class="aps2-importance-table feature-table-wrap">
+            <table>
+              <thead>
+                <tr><th>Variável original</th><th>Importância RF</th><th>Média de |SHAP|</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>room_type</code></td><td>0,1919</td><td>0,3916</td></tr>
+                <tr><td><code>longitude</code></td><td>0,1781</td><td>0,1474</td></tr>
+                <tr><td><code>latitude</code></td><td>0,1400</td><td>—</td></tr>
+                <tr><td><code>availability_365</code></td><td>0,1320</td><td>0,1045</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="aps2-coefficient-table feature-table-wrap">
+            <table>
+              <thead>
+                <tr><th>Atributo codificado do Ridge</th><th>Coeficiente (US$)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>neighbourhood = Tribeca</code></td><td>+167,18</td></tr>
+                <tr><td><code>room_type = Entire home/apt</code></td><td>+78,13</td></tr>
+                <tr><td><code>neighbourhood_group = Manhattan</code></td><td>+60,57</td></tr>
+              </tbody>
+            </table>
+            <p class="caption">Três coeficientes de maior magnitude. São parâmetros do modelo, não efeitos causais.</p>
+          </div>
+          <div class="aps2-figure-grid">
+            <figure>
+              <img src="reports/figures/aps2/aps2_forest_importance.png" alt="Importância de atributos da Random Forest agregada por variável original">
+              <figcaption>Importâncias da floresta agregadas por variável original.</figcaption>
+            </figure>
+            <figure>
+              <img src="reports/figures/aps2/aps2_ridge_coefficients.png" alt="Dez maiores coeficientes individuais do Ridge, com seus sinais">
+              <figcaption>Dez coeficientes codificados de maior magnitude; o sinal mostra a direção condicional do modelo.</figcaption>
+            </figure>
+            <figure>
+              <img src="reports/figures/aps2/aps2_shap_global.png" alt="Importância global SHAP agregada por variável original">
+              <figcaption>Média de |SHAP| global, agregada por variável original.</figcaption>
+            </figure>
+          </div>
+          <div class="aps2-figure-grid aps2-local-explanations">
+            <figure>
+              <img src="reports/figures/aps2/aps2_shap_case_1.png" alt="Explicação SHAP de uma previsão subestimada">
+              <figcaption>Exemplo de maior subestimação no teste; explicação em <code>log1p(price)</code>.</figcaption>
+            </figure>
+            <figure>
+              <img src="reports/figures/aps2/aps2_shap_case_2.png" alt="Explicação SHAP de uma previsão superestimada">
+              <figcaption>Exemplo de maior superestimação no teste; explicação em <code>log1p(price)</code>.</figcaption>
+            </figure>
+            <figure>
+              <img src="reports/figures/aps2/aps2_shap_case_3.png" alt="Explicação SHAP de uma previsão com erro mediano">
+              <figcaption>Exemplo com erro absoluto próximo da mediana; explicação em <code>log1p(price)</code>.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="aps2-critical">
+          <article>
+            <span>Limitações</span>
+            <p>
+              A Random Forest subestima a faixa mais cara no teste e, por sua
+              estrutura de árvores, não extrapola tendências além dos valores
+              observados no treino. A sobreposição de anfitriões entre treino e
+              teste também pode tornar a estimativa otimista para anfitriões
+              novos; a base cobre anúncios do Airbnb em Nova York.
+            </p>
+          </article>
+          <article>
+            <span>Operação e manutenção</span>
+            <p>
+              Uma implantação deve versionar o pré-processamento, modelo, dados
+              de referência e versões das bibliotecas. Depois, deve acompanhar
+              qualidade e mudança das entradas, além do MAE geral e por faixa
+              de preço, com critérios para revisão ou retreinamento.
+            </p>
+          </article>
+        </div>
+
+        <div class="aps2-notebook-link">
+          <a class="download-link" href="APS2_Regressao_NYC_Airbnb.ipynb" download>Baixar notebook completo da APS2</a>
+          <span>Resultados, buscas, curvas e explicações SHAP</span>
+        </div>
       </div>
     </section>
 
