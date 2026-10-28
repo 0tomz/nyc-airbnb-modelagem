@@ -1,0 +1,416 @@
+{
+  "dados": {
+    "linhas": 48895,
+    "colunas": 16,
+    "preco_nao_positivo": 11,
+    "minimum_nights_acima_365": 14
+  },
+  "split": {
+    "treino": 39107,
+    "teste": 9777,
+    "hosts_teste": 8727,
+    "hosts_em_comum": 2142,
+    "hosts_em_comum_pct": 24.544517016156753,
+    "anuncios_teste_host_no_treino_pct": 31.011557737547307
+  },
+  "dummy": {
+    "mae_cv": 83.65943221854397,
+    "desvio_cv": 1.3600681122869147
+  },
+  "inicial": {
+    "ridge": {
+      "mae_cv": 70.78263702247729,
+      "desvio_cv": 1.4893782672677731,
+      "alpha": 100.0
+    },
+    "rf": {
+      "mae_cv": 63.421215903100915,
+      "desvio_cv": 1.8530904354848068,
+      "params": {
+        "min_samples_leaf": 5.0,
+        "max_features": 0.2,
+        "max_depth": null
+      }
+    }
+  },
+  "comparacao": {
+    "Dummy (mediana)": {
+      "mae_cv": 83.65943221854397,
+      "desvio_cv": 1.3600681122869147
+    },
+    "Ridge": {
+      "mae_cv": 70.78263702247729,
+      "desvio_cv": 1.4893782672677731
+    },
+    "Random Forest": {
+      "mae_cv": 63.421215903100915,
+      "desvio_cv": 1.8530904354848068
+    },
+    "Ridge + log1p": {
+      "mae_cv": 59.8712251612459,
+      "desvio_cv": 1.6667063710457424
+    },
+    "Random Forest + log1p": {
+      "mae_cv": 55.812568275732495,
+      "desvio_cv": 1.9520195446568664
+    }
+  },
+  "rf_log": {
+    "mae_cv": 55.812568275732495,
+    "delta": -7.60864762736842,
+    "delta_pct": -11.997006867533743,
+    "folds_melhores": 5,
+    "params": {
+      "min_samples_leaf": 1.0,
+      "max_features": 0.2,
+      "max_depth": 20.0
+    }
+  },
+  "ridge_log": {
+    "mae_cv": 59.8712251612459,
+    "alpha": 10.0
+  },
+  "final": {
+    "modelo": "Random Forest + log1p",
+    "mae_cv": 55.812568275732495
+  },
+  "limite_grade": [
+    {
+      "modelo": "Ridge",
+      "hiperparâmetro": "alpha",
+      "melhor valor": 100.0,
+      "no limite da grade": false,
+      "é limite natural do hiperparâmetro": false
+    },
+    {
+      "modelo": "Random Forest",
+      "hiperparâmetro": "max_depth",
+      "melhor valor": null,
+      "no limite da grade": true,
+      "é limite natural do hiperparâmetro": true
+    },
+    {
+      "modelo": "Random Forest",
+      "hiperparâmetro": "min_samples_leaf",
+      "melhor valor": 5,
+      "no limite da grade": false,
+      "é limite natural do hiperparâmetro": false
+    },
+    {
+      "modelo": "Random Forest",
+      "hiperparâmetro": "max_features",
+      "melhor valor": 0.2,
+      "no limite da grade": false,
+      "é limite natural do hiperparâmetro": false
+    },
+    {
+      "modelo": "Ridge + log1p",
+      "hiperparâmetro": "alpha",
+      "melhor valor": 10.0,
+      "no limite da grade": false,
+      "é limite natural do hiperparâmetro": false
+    },
+    {
+      "modelo": "Random Forest + log1p",
+      "hiperparâmetro": "max_depth",
+      "melhor valor": 20,
+      "no limite da grade": false,
+      "é limite natural do hiperparâmetro": false
+    },
+    {
+      "modelo": "Random Forest + log1p",
+      "hiperparâmetro": "min_samples_leaf",
+      "melhor valor": 1,
+      "no limite da grade": true,
+      "é limite natural do hiperparâmetro": true
+    },
+    {
+      "modelo": "Random Forest + log1p",
+      "hiperparâmetro": "max_features",
+      "melhor valor": 0.2,
+      "no limite da grade": false,
+      "é limite natural do hiperparâmetro": false
+    }
+  ],
+  "curva": {
+    "tamanhos": [
+      6257,
+      12514,
+      18771,
+      25028,
+      31285
+    ],
+    "mae_treino": [
+      29.955247441291068,
+      33.988030067357386,
+      35.917212849009736,
+      37.11546184638163,
+      37.998110480702664
+    ],
+    "mae_validacao": [
+      58.2315895547629,
+      57.11305074727598,
+      56.55756167371519,
+      56.10512028258895,
+      55.84324241647901
+    ]
+  },
+  "teste": {
+    "mae": 57.52774019336647,
+    "mae_dummy": 85.9274828679554,
+    "residuo_medio": 23.36722082696858,
+    "residuo_mediano": -3.833598014714738,
+    "residuo_p1": -121.13018962168753,
+    "residuo_p99": 531.4115603913449,
+    "erro_ate_25_pct": 52.50076710647438,
+    "fora_dos_eixos": 196,
+    "anuncios": 9777
+  },
+  "decis": {
+    "mae": [
+      18.46435497678275,
+      15.258082611655547,
+      18.420766637207635,
+      24.93243110552206,
+      33.18942088096848,
+      34.18868545976429,
+      37.566732121004115,
+      38.84199539654453,
+      50.01642173223536,
+      306.66624849501216
+    ],
+    "erro_assinado": [
+      -18.060644312924865,
+      -13.372339617159819,
+      -10.098697004971974,
+      -11.157142832702664,
+      -20.166566922415004,
+      -14.908941766075916,
+      -11.758803854772502,
+      -0.38671384408499027,
+      30.870856254342335,
+      303.4822691042727
+    ],
+    "mediana_preco": [
+      40.0,
+      55.0,
+      70.0,
+      85.0,
+      100.0,
+      120.0,
+      149.0,
+      175.0,
+      225.0,
+      366.0
+    ]
+  },
+  "cauda": {
+    "n_ge_1000": 62,
+    "share_erro_pct": 23.470824486495633,
+    "mae_sem_cauda": 44.30647091528771,
+    "pior_real": 9999.0,
+    "pior_previsto": 115.27023084860505
+  },
+  "avaliacoes": {
+    "com avaliações": {
+      "n": 7782,
+      "mae": 48.34795936001296,
+      "mediana_preco": 100.0,
+      "erro_assinado": 16.370434766289126
+    },
+    "sem avaliações": {
+      "n": 1995,
+      "mae": 93.33578753429735,
+      "mediana_preco": 120.0,
+      "erro_assinado": 50.65994720501746
+    }
+  },
+  "ridge": {
+    "modelo": "Ridge + log1p(price)",
+    "unidade": "log1p(price)",
+    "top3": [
+      {
+        "feature": "room_type = Entire home/apt",
+        "coef": 0.6112818380798847,
+        "n": 20278.0
+      },
+      {
+        "feature": "neighbourhood_group = Staten Island",
+        "coef": -0.5572228798886254,
+        "n": 295.0
+      },
+      {
+        "feature": "neighbourhood = Tribeca",
+        "coef": 0.5287389307598648,
+        "n": 150.0
+      }
+    ],
+    "top_numericas": [
+      {
+        "feature": "availability_365",
+        "coef": 0.12351535581922257
+      },
+      {
+        "feature": "longitude",
+        "coef": -0.10320795086930737
+      },
+      {
+        "feature": "minimum_nights",
+        "coef": -0.0928047128790301
+      }
+    ]
+  },
+  "floresta": {
+    "top3_colunas": [
+      {
+        "feature": "room_type = Entire home/apt",
+        "imp": 0.22965612926562035
+      },
+      {
+        "feature": "room_type = Private room",
+        "imp": 0.1485308721482538
+      },
+      {
+        "feature": "longitude",
+        "imp": 0.1472481547757514
+      }
+    ],
+    "agregada": {
+      "room_type": 0.39921903917923335,
+      "longitude": 0.1472481547757514,
+      "latitude": 0.10419253572064006,
+      "neighbourhood": 0.07043965013139827,
+      "availability_365": 0.06711925885691078,
+      "neighbourhood_group": 0.055587067695123095,
+      "minimum_nights": 0.04649891762789968,
+      "reviews_per_month": 0.04194477246982592,
+      "number_of_reviews": 0.03570423104467243,
+      "calculated_host_listings_count": 0.03204637249854501
+    }
+  },
+  "shap_global": {
+    "room_type": 0.37160444134987436,
+    "longitude": 0.12790747704248326,
+    "availability_365": 0.092141603251291,
+    "neighbourhood_group": 0.08609392580487557,
+    "latitude": 0.06678385465326321,
+    "minimum_nights": 0.04653017982512866,
+    "neighbourhood": 0.03973337736518265,
+    "number_of_reviews": 0.02780964391629282,
+    "reviews_per_month": 0.026195799284354632,
+    "calculated_host_listings_count": 0.012970449092463919
+  },
+  "shap_casos": {
+    "maior subestimação": {
+      "real": 9999.0,
+      "previsto": 115.27023084860505,
+      "top": [
+        {
+          "variavel": "room_type",
+          "valor": "Entire home/apt",
+          "shap": 0.32430218565208097,
+          "efeito_pct": 38.30651864329659
+        },
+        {
+          "variavel": "longitude",
+          "valor": -73.93898,
+          "shap": -0.17974401509544113,
+          "efeito_pct": -16.45159446541371
+        },
+        {
+          "variavel": "availability_365",
+          "valor": 0.0,
+          "shap": -0.12746598090961084,
+          "efeito_pct": -11.967663687510976
+        },
+        {
+          "variavel": "neighbourhood",
+          "valor": "East Harlem",
+          "shap": -0.049916749963287425,
+          "efeito_pct": -4.869138231840231
+        }
+      ]
+    },
+    "maior superestimação": {
+      "real": 180.0,
+      "previsto": 567.1589897608087,
+      "top": [
+        {
+          "variavel": "room_type",
+          "valor": "Entire home/apt",
+          "shap": 0.40689237697620084,
+          "efeito_pct": 50.21424318515015
+        },
+        {
+          "variavel": "neighbourhood",
+          "valor": "Tribeca",
+          "shap": 0.3522703832119191,
+          "efeito_pct": 42.22930358927515
+        },
+        {
+          "variavel": "longitude",
+          "valor": -74.00709,
+          "shap": 0.34178133935972504,
+          "efeito_pct": 40.7452509397894
+        },
+        {
+          "variavel": "neighbourhood_group",
+          "valor": "Manhattan",
+          "shap": 0.17720702680419143,
+          "efeito_pct": 19.387823233907042
+        }
+      ]
+    },
+    "erro absoluto mediano": {
+      "real": 133.0,
+      "previsto": 156.24716723135046,
+      "top": [
+        {
+          "variavel": "room_type",
+          "valor": "Entire home/apt",
+          "shap": 0.366946138200287,
+          "efeito_pct": 44.33201771992308
+        },
+        {
+          "variavel": "minimum_nights",
+          "valor": 30.0,
+          "shap": -0.16104510264074118,
+          "efeito_pct": -14.874632354744111
+        },
+        {
+          "variavel": "latitude",
+          "valor": 40.77467,
+          "shap": 0.0873511117722564,
+          "efeito_pct": 9.12797736352986
+        },
+        {
+          "variavel": "neighbourhood_group",
+          "valor": "Manhattan",
+          "shap": 0.07296191034407545,
+          "efeito_pct": 7.568956348902156
+        }
+      ]
+    }
+  },
+  "shap_base": 4.737658011003916,
+  "sens_noites": {
+    "treino_removidos": 12,
+    "teste_com_365": 2,
+    "media": {
+      "com todos — teste completo": 57.47947399894665,
+      "sem >365 no treino — teste completo": 57.507051271514285,
+      "com todos — teste sem >365": 57.48319825344074,
+      "sem >365 no treino — teste sem >365": 57.51037673992743
+    },
+    "desvio_entre_sementes_com_todos": 0.04421871586856736
+  },
+  "sens_host": {
+    "linha": 55.78771383243204,
+    "grupo": 58.41740597495883,
+    "dif_media": 2.629692142526794,
+    "dif_desvio": 0.17646675640157322,
+    "dif_pct": 4.713747816276403,
+    "sementes_pior": 5
+  },
+  "tempo_execucao_min": 20.8
+}
