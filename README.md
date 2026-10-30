@@ -8,7 +8,8 @@ Projeto de Machine Learning em duas etapas sobre o dataset **New York City Airbn
 - **Problema:** regressão para previsão de `price`, o preço anunciado por noite em USD.
 - **Autores:** Maria Eduarda Oliveira Galdino e Tomaz Santos Almeida.
 - **Prazo de entrega da APS2:** **A CONFIRMAR** (as orientações da disciplina estão em `Projeto_de_Machine_Learning (1).ipynb`; confira a data lá e no formulário de entrega).
-- **Site do projeto:** <https://meog38.github.io/nyc-airbnb-eda-pipeline/> (a página da APS2 só aparece depois que esta branch for integrada a `main`; ver "GitHub Pages").
+- **Site do projeto (APS1 e APS2):** <https://0tomz.github.io/nyc-airbnb-modelagem/>.
+- **Site anterior (APS1):** <https://meog38.github.io/nyc-airbnb-eda-pipeline/>.
 - **Relatório web:** `index.html` (APS1 e APS2).
 - **Notebook APS1:** `Meu_projeto_EDA_ML_revisado (2).ipynb` — entrega final da EDA, preservada.
 - **Notebook APS2:** `APS2_Regressao_NYC_Airbnb.ipynb` — modelagem, avaliação, explicabilidade, sensibilidades e discussão crítica.
@@ -176,7 +177,9 @@ As decisões de preparação foram reunidas com `Pipeline` e `ColumnTransformer`
 
 ## GitHub Pages
 
-O workflow em `.github/workflows/pages.yml` publica a página a cada push na branch `main`. Para a APS2 aparecer no site é preciso integrar esta branch (`codex/aps2-regression`) a `main` e dar push; depois, se o repositório ainda não estiver configurado, abra **Settings > Pages**, selecione **GitHub Actions** em *Build and deployment* e execute o workflow novamente.
+A branch `codex/aps2-regression` foi integrada na `main`. O workflow em `.github/workflows/pages.yml` publica o site a cada push na `main`, na URL <https://0tomz.github.io/nyc-airbnb-modelagem/>.
+
+Para habilitar o site, um administrador deve abrir **Settings > Pages**, selecionar **GitHub Actions** em *Build and deployment* e executar **Deploy static page to GitHub Pages** na aba **Actions**. O site anterior da APS1 continua no repositório `Meog38/nyc-airbnb-eda-pipeline`.
 
 Arquivos necessários para a página:
 
