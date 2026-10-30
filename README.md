@@ -87,6 +87,31 @@ python -m src.nyc_airbnb_eda.cli --input caminho\AB_NYC_2019.csv
 
 ## Relatório Web
 
+A apresentação prioriza os resultados da regressão original. A EDA completa fica em
+uma seção expansível de apoio. Os gráficos de apresentação têm rótulos maiores,
+diagnósticos separados e links para abrir as imagens em tamanho completo.
+
+Para visualizar localmente:
+
+```powershell
+python -m http.server 8765 --bind 127.0.0.1
+```
+
+Abra <http://127.0.0.1:8765/>. Para regenerar os gráficos de apresentação:
+
+```powershell
+python scripts/render_presentation_figures.py
+```
+
+O script usa os resultados salvos em `reports/aps2_results.json` e reajusta somente
+a configuração final publicada para redesenhar os diagnósticos, conferindo o MAE
+original. Não executa novas buscas nem altera o notebook ou as métricas da APS2.
+As imagens ficam em `reports/figures/apresentacao/` e a conferência em
+`reports/presentation_checks.json`.
+
+Os experimentos posteriores estão preservados separadamente na branch local
+`experimentos/modelagem-robusta`. A entrega principal usa a modelagem original.
+
 A página estática em `index.html` apresenta os resultados das duas etapas:
 
 - resumo do dataset;
