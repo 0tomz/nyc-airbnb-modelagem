@@ -87,9 +87,11 @@ python -m src.nyc_airbnb_eda.cli --input caminho\AB_NYC_2019.csv
 
 ## Relatório Web
 
-A apresentação prioriza os resultados da regressão original. A EDA completa fica em
-uma seção expansível de apoio. Os gráficos de apresentação têm rótulos maiores,
+A apresentação prioriza os resultados da regressão original. A EDA completa e as interpretações ficam em
+seções expansíveis abertas por padrão, podendo ser recolhidas durante a leitura. Os gráficos de apresentação têm rótulos maiores,
 diagnósticos separados e links para abrir as imagens em tamanho completo.
+A curva com dispersão entre folds, os dez coeficientes do Ridge e os três gráficos
+SHAP originais detalhados também permanecem visíveis.
 
 Para visualizar localmente:
 

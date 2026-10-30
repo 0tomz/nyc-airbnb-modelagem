@@ -95,7 +95,7 @@
           seu erro de validação caiu de US$ 63,42 para US$ 55,81. O Ridge com log
           (US$ 59,87) também superou a floresta sem log.</p>
           <figure class="report-figure"><a class="chart-link" href="reports/figures/apresentacao/comparacao_modelos.png" target="_blank" rel="noopener" aria-label="Ampliar: Comparação de cinco modelos pelo MAE de validação"><img src="reports/figures/apresentacao/comparacao_modelos.png" alt="Comparação de cinco modelos pelo MAE de validação" loading="lazy" decoding="async"></a><figcaption>MAE médio em cinco folds de treino. As barras de erro mostram um desvio entre folds; não são intervalos de confiança. Laranja indica alvo transformado com log1p. <a class="figure-open" href="reports/figures/apresentacao/comparacao_modelos.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
-          <details class="method-notes">
+          <details class="method-notes" open>
             <summary>Protocolo de avaliação, justificativas e hiperparâmetros</summary>
             <p>O Dummy prevê a mediana e fornece a referência mínima. O Ridge é linear com
             regularização L2; a Random Forest aprende relações não lineares e interações.
@@ -124,7 +124,7 @@
             métrica e folds. A melhora apareceu nos cinco folds, sem consultar o teste.</p>
           </details>
           <h4>O que a curva de aprendizado acrescenta</h4>
-          <figure class="report-figure"><a class="chart-link" href="reports/figures/apresentacao/curva_aprendizado.png" target="_blank" rel="noopener" aria-label="Ampliar: Curva de aprendizado da Random Forest original"><img src="reports/figures/apresentacao/curva_aprendizado.png" alt="Curva de aprendizado da Random Forest original" loading="lazy" decoding="async"></a><figcaption>O MAE de validação cai de US$ 58,23 para US$ 55,84 ao ampliar o ajuste de 6.257 para 31.285 anúncios por fold. No maior tamanho, o MAE de treino é US$ 38,00. O hiato permanece; a curva não identifica sozinha a causa do erro restante. <a class="figure-open" href="reports/figures/apresentacao/curva_aprendizado.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
+          <figure class="report-figure"><a class="chart-link" href="reports/figures/aps2/aps2_learning_curve.png" target="_blank" rel="noopener" aria-label="Ampliar: Curva de aprendizado da Random Forest original"><img src="reports/figures/aps2/aps2_learning_curve.png" alt="Curva de aprendizado da Random Forest original" loading="lazy" decoding="async"></a><figcaption>A faixa sombreada mostra ±1 desvio entre os folds de validação. O MAE de validação cai de US$ 58,23 para US$ 55,84 ao ampliar o ajuste de 6.257 para 31.285 anúncios por fold. No maior tamanho, o MAE de treino é US$ 38,00. O hiato permanece; a curva não identifica sozinha a causa do erro restante. <a class="figure-open" href="reports/figures/aps2/aps2_learning_curve.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
         </div>
         <div class="report-block" id="avaliacao-teste">
           <p class="eyebrow">02 / Avaliação no teste</p>
@@ -156,7 +156,7 @@
           <code>room_type</code> lidera (0,372), seguido de <code>longitude</code> (0,128) e
           <code>availability_365</code> (0,092). Esses valores estão em <code>log1p(price)</code>,
           sem representar dólares ou percentuais.</p>
-          <details class="method-notes">
+          <details class="method-notes" open>
             <summary>Conferir os três principais atributos do Ridge e da floresta</summary>
             <p>Na floresta, as maiores importâncias por coluna são imóvel inteiro (0,230),
             quarto privado (0,149) e longitude (0,147). As duas primeiras codificam o mesmo
@@ -178,7 +178,7 @@
               </tbody>
             </table></div>
             <h4>Ridge: os três coeficientes de maior magnitude</h4>
-            <figure class="report-figure"><a class="chart-link" href="reports/figures/apresentacao/coeficientes_ridge.png" target="_blank" rel="noopener" aria-label="Ampliar: Três coeficientes de maior magnitude do Ridge"><img src="reports/figures/apresentacao/coeficientes_ridge.png" alt="Três coeficientes de maior magnitude do Ridge" loading="lazy" decoding="async"></a><figcaption>Coeficientes em log1p(price), referentes ao Ridge, não à floresta final. O sinal indica a direção da associação no ajuste regularizado. <a class="figure-open" href="reports/figures/apresentacao/coeficientes_ridge.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
+            <figure class="report-figure"><a class="chart-link" href="reports/figures/aps2/aps2_ridge_coefficients.png" target="_blank" rel="noopener" aria-label="Ampliar: Dez coeficientes de maior magnitude do Ridge"><img src="reports/figures/aps2/aps2_ridge_coefficients.png" alt="Dez coeficientes de maior magnitude do Ridge" loading="lazy" decoding="async"></a><figcaption>Visão dos dez coeficientes de maior magnitude, com destaque analítico para os três maiores. Coeficientes em log1p(price), referentes ao Ridge, não à floresta final. O sinal indica a direção da associação no ajuste regularizado. <a class="figure-open" href="reports/figures/aps2/aps2_ridge_coefficients.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
             <p>O sinal positivo de imóvel inteiro e Tribeca, e o negativo de Staten Island,
             são compatíveis com diferenças da EDA. Os dois lugares têm amostras pequenas:
             150 e 295 anúncios no treino. Bairro, borough e coordenadas também compartilham
@@ -196,6 +196,16 @@
           <figure class="report-figure"><a class="chart-link" href="reports/figures/apresentacao/shap_caso_1.png" target="_blank" rel="noopener" aria-label="Ampliar: SHAP da maior subestimação"><img src="reports/figures/apresentacao/shap_caso_1.png" alt="SHAP da maior subestimação" loading="lazy" decoding="async"></a><figcaption>Imóvel inteiro eleva a estimativa; longitude e disponibilidade zero a reduzem. O modelo prevê US$ 115,27 para um preço anunciado de US$ 9.999. A explicação da saída não determina por que o preço real é extremo. <a class="figure-open" href="reports/figures/apresentacao/shap_caso_1.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
           <figure class="report-figure"><a class="chart-link" href="reports/figures/apresentacao/shap_caso_2.png" target="_blank" rel="noopener" aria-label="Ampliar: SHAP da maior superestimação"><img src="reports/figures/apresentacao/shap_caso_2.png" alt="SHAP da maior superestimação" loading="lazy" decoding="async"></a><figcaption>Imóvel inteiro, Tribeca e os demais sinais geográficos elevam a estimativa para US$ 567,16; o preço real é US$ 180. Atribuições positivas em atributos relacionados não provam contagem indevida da mesma informação. <a class="figure-open" href="reports/figures/apresentacao/shap_caso_2.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
           <figure class="report-figure"><a class="chart-link" href="reports/figures/apresentacao/shap_caso_3.png" target="_blank" rel="noopener" aria-label="Ampliar: SHAP de um anúncio com erro próximo da mediana"><img src="reports/figures/apresentacao/shap_caso_3.png" alt="SHAP de um anúncio com erro próximo da mediana" loading="lazy" decoding="async"></a><figcaption>Imóvel inteiro e localização elevam a saída; estadia mínima de 30 noites a reduz. O preço real é US$ 133 e a previsão, US$ 156,25. A associação não demonstra um desconto causal por estadias longas. <a class="figure-open" href="reports/figures/apresentacao/shap_caso_3.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
+          <div class="shap-detail-collection">
+            <h4>SHAP completo: contribuições de cada coluna transformada</h4>
+            <p>Os gráficos anteriores agrupam as colunas one-hot por variável para facilitar a leitura.
+            Abaixo estão as três visualizações originais detalhadas. Aqui as categorias aparecem
+            separadamente, e os valores numéricos dos rótulos já passaram por log e/ou padronização.
+            As contribuições continuam na escala <code>log1p(price)</code>.</p>
+            <figure class="report-figure"><a class="chart-link" href="reports/figures/aps2/aps2_shap_case_1.png" target="_blank" rel="noopener" aria-label="Ampliar SHAP detalhado: Maior subestimação"><img src="reports/figures/aps2/aps2_shap_case_1.png" alt="Maior subestimação: SHAP original por coluna transformada" loading="lazy" decoding="async"></a><figcaption>Maior subestimação: detalhamento original das contribuições individuais. <a class="figure-open" href="reports/figures/aps2/aps2_shap_case_1.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
+            <figure class="report-figure"><a class="chart-link" href="reports/figures/aps2/aps2_shap_case_2.png" target="_blank" rel="noopener" aria-label="Ampliar SHAP detalhado: Maior superestimação"><img src="reports/figures/aps2/aps2_shap_case_2.png" alt="Maior superestimação: SHAP original por coluna transformada" loading="lazy" decoding="async"></a><figcaption>Maior superestimação: detalhamento original das contribuições individuais. <a class="figure-open" href="reports/figures/aps2/aps2_shap_case_2.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
+            <figure class="report-figure"><a class="chart-link" href="reports/figures/aps2/aps2_shap_case_3.png" target="_blank" rel="noopener" aria-label="Ampliar SHAP detalhado: Erro próximo da mediana"><img src="reports/figures/aps2/aps2_shap_case_3.png" alt="Erro próximo da mediana: SHAP original por coluna transformada" loading="lazy" decoding="async"></a><figcaption>Erro próximo da mediana: detalhamento original das contribuições individuais. <a class="figure-open" href="reports/figures/aps2/aps2_shap_case_3.png" target="_blank" rel="noopener">Abrir em tamanho completo ↗</a></figcaption></figure>
+          </div>
         </div>
         <div class="report-block">
           <p class="eyebrow">04 / Discussão crítica</p>
@@ -288,8 +298,8 @@
       </div>
     </section>
 
-    <details class="eda-appendix" id="eda">
-      <summary><span class="eyebrow">APS1 / Material de apoio</span><strong>Explorar os dados e o pré-processamento</strong><span>Dicionário, auditoria, distribuições, relações e PCA</span></summary>
+    <details class="eda-appendix" id="eda" open>
+      <summary><span class="eyebrow">APS1 / Análise exploratória completa</span><strong>Explorar os dados e o pré-processamento</strong><span>Dicionário, auditoria, distribuições, relações e PCA</span></summary>
     <section class="section page-shell" id="dados">
       <div class="section-heading">
         <p class="eyebrow">01 / Leitura da base</p>
