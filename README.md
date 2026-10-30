@@ -25,8 +25,11 @@ O pré-processamento da APS1 é mantido dentro dos pipelines de modelagem, entã
 | `src/nyc_airbnb_eda/modeling.py` | novo | Pipelines de modelo (`build_model_pipeline`, `build_log_target_pipeline`) e nomes de features |
 | `tests/test_modeling.py` | novo | Testes de `modeling.py` |
 | `reports/figures/aps2/` | novo | Nove figuras geradas pelo notebook |
+| `reports/figures/apresentacao/` | novo | Gráficos para leitura na página, baseados nos resultados originais |
 | `reports/aps2_results.json` | novo | Números finais gravados pelo notebook (fonte do README e do site) |
-| `index.html`, `styles.css` | alterados | Seção da APS2 no relatório web |
+| `scripts/render_presentation_figures.py` | novo | Regenera os gráficos de apresentação e confere o MAE original |
+| `reports/presentation_checks.json` | novo | Conferência das métricas e identificação dos resultados usados nos gráficos |
+| `index.html`, `styles.css`, `presentation.js` | apresentação | Relatório web, estilos e navegação para as seções expansíveis |
 | `requirements.txt`, `pyproject.toml` | alterados | Incluem `shap` e `ipykernel` |
 | `README.md`, `.gitignore` | alterados | Documentação; ignora `.matplotlib/` e `.jupyter_runtime/` |
 | `Projeto_de_Machine_Learning (1).ipynb` | orientações | Enunciado e rubrica da disciplina |
@@ -40,8 +43,10 @@ O `preprocessing.py`, o CLI e o notebook da APS1 não foram alterados.
 ├── data/raw/                  # coloque AB_NYC_2019.csv aqui (não é versionado)
 ├── reports/
 │   ├── figures/               # gráficos da APS1
-│   │   └── aps2/              # gráficos da APS2: comparação, curva, teste, coeficientes, importâncias, SHAP
-│   └── aps2_results.json      # números finais da APS2
+│   │   ├── aps2/              # gráficos originais da APS2
+│   │   └── apresentacao/      # versões para leitura na página e diagnósticos separados
+│   ├── aps2_results.json      # números finais da APS2
+│   └── presentation_checks.json # conferência dos gráficos de apresentação
 ├── src/nyc_airbnb_eda/
 │   ├── data.py                # carregamento do dataset
 │   ├── eda.py                 # tabelas e visualizações da APS1
@@ -49,7 +54,8 @@ O `preprocessing.py`, o CLI e o notebook da APS1 não foram alterados.
 │   ├── modeling.py            # pipelines de modelo da APS2
 │   └── cli.py                 # ponto de entrada da APS1
 ├── tests/                     # testes unitários (pré-processamento e modelagem)
-├── index.html, styles.css     # relatório web
+├── scripts/render_presentation_figures.py # gráficos da apresentação
+├── index.html, styles.css, presentation.js # relatório web e navegação
 ├── Meu_projeto_EDA_ML_revisado (2).ipynb
 ├── APS2_Regressao_NYC_Airbnb.ipynb
 ├── Projeto_de_Machine_Learning (1).ipynb
@@ -77,7 +83,7 @@ python -m src.nyc_airbnb_eda.cli
 
 O `requirements.txt` inclui `seaborn` e `shap`, usados na APS2. O CLI da APS1 gera tabelas em `reports/` e figuras em `reports/figures/`.
 
-Para a APS2, deixe o CSV em `data/raw/AB_NYC_2019.csv`, abra `APS2_Regressao_NYC_Airbnb.ipynb` **na raiz do repositório** (o notebook confere a pasta) pelo VS Code ou Jupyter, escolha o kernel do ambiente acima e execute todas as células (Restart & Run All). **Tempo de execução: cerca de 21 minutos** num PC com 20 núcleos; as buscas da Random Forest, a curva de aprendizado, o SHAP e as sensibilidades são as partes mais pesadas. O notebook grava as figuras em `reports/figures/aps2/` e os números em `reports/aps2_results.json`.
+Para a APS2, deixe o CSV em `data/raw/AB_NYC_2019.csv`, abra `APS2_Regressao_NYC_Airbnb.ipynb` **na raiz do repositório** (o notebook confere a pasta) pelo VS Code ou Jupyter, escolha o kernel do ambiente acima e execute todas as células (Restart & Run All). A execução registrada levou **cerca de 21 minutos**; o tempo varia conforme o computador. As buscas da Random Forest, a curva de aprendizado, o SHAP e as sensibilidades são as partes mais pesadas. O notebook grava as figuras em `reports/figures/aps2/` e os números em `reports/aps2_results.json`. Depois de reexecutá-lo, regenere os gráficos da apresentação com o comando da seção seguinte.
 
 Para indicar outro caminho de CSV no CLI da APS1:
 
@@ -110,9 +116,12 @@ a configuração final publicada para redesenhar os diagnósticos, conferindo o 
 original. Não executa novas buscas nem altera o notebook ou as métricas da APS2.
 As imagens ficam em `reports/figures/apresentacao/` e a conferência em
 `reports/presentation_checks.json`.
+Os textos e as tabelas deste README e de `index.html` são estáticos. Se uma nova
+execução mudar os resultados, revise esses números a partir de
+`reports/aps2_results.json`; regenerar as imagens não atualiza os textos automaticamente.
 
-Os experimentos posteriores estão preservados separadamente na branch local
-`experimentos/modelagem-robusta`. A entrega principal usa a modelagem original.
+A entrega principal corresponde à modelagem de `APS2_Regressao_NYC_Airbnb.ipynb`.
+Os gráficos de apresentação usam essa mesma modelagem e suas métricas.
 
 A página estática em `index.html` apresenta os resultados das duas etapas:
 
@@ -127,7 +136,10 @@ A página estática em `index.html` apresenta os resultados das duas etapas:
 - comparação de Dummy, Ridge e Random Forest, com e sem `log1p` no alvo;
 - avaliação final, curva de aprendizado, resíduos, importâncias, coeficientes e explicações SHAP da APS2.
 
-O CSS principal está em `styles.css`, e os estilos essenciais também estão embutidos no HTML para evitar falhas de renderização em ambientes estáticos.
+O CSS principal está em `styles.css`; estilos básicos também estão embutidos no HTML.
+O arquivo `presentation.js` abre as seções expansíveis quando um link aponta para
+seu conteúdo. Os gráficos abrem em tamanho completo por links comuns, sem depender
+do JavaScript.
 
 ## Principais Achados
 
@@ -146,7 +158,7 @@ O CSS principal está em `styles.css`, e os estilos essenciais também estão em
 
 ### APS2 — Regressão
 
-Métrica principal: **MAE em dólares**. Escolha de modelo e de hiperparâmetros por validação cruzada de cinco folds (`KFold`, `random_state=42`) **só no treino**; o teste (20%, o mesmo split da APS1) aparece só na avaliação final.
+Métrica principal: **MAE em dólares**. Escolha de modelo e de hiperparâmetros por validação cruzada de cinco folds (`KFold`, `random_state=42`) **só no treino**; o teste (20%, o mesmo split da APS1) é consultado depois da seleção, para avaliação e diagnósticos. Por ser regressão, o projeto não reporta acurácia. A redução de MAE frente ao Dummy é uma redução do erro médio, não um percentual de acertos.
 
 | Modelo | MAE CV ± desvio entre folds (US$) | Configuração |
 |---|---|---|
@@ -158,6 +170,7 @@ Métrica principal: **MAE em dólares**. Escolha de modelo e de hiperparâmetros
 
 - **Mudança no pipeline:** `log1p(price)` no alvo (`TransformedTargetRegressor`; o `predict` devolve dólares). Reduziu o MAE CV da floresta em 12,0% (−US$ 7,61), melhor em 5 dos 5 folds. O Ridge com log (US$ 59,87) já supera a floresta sem log (US$ 63,42).
 - **Teste:** MAE de **US$ 57,53**, contra US$ 85,93 do Dummy (33,1% menos erro). MAE CV na seleção: US$ 55,81.
+- **Leitura prática do erro:** 52,5% dos anúncios do teste tiveram erro absoluto de até US$ 25. O MAE geral não é garantia de precisão para cada anúncio.
 - **Onde erra:** decil de maior preço com MAE de US$ 306,67 e resíduo médio `real − previsto` de +US$ 303,48 (subestima). Os 62 anúncios de US$ 1.000 ou mais respondem por 23,5% do erro absoluto. Anúncios sem avaliações têm MAE de US$ 93,34, contra US$ 48,35 dos demais.
 - **Interpretação:** `room_type` e localização dominam nos três métodos. Importância da floresta (agregada): `room_type` 0,399, `longitude` 0,147, `latitude` 0,104, `neighbourhood` 0,070. SHAP médio: `room_type` 0,372, `longitude` 0,128, `availability_365` 0,092, `neighbourhood_group` 0,086. Ridge + log, maiores coeficientes (em `log1p(price)`, não em dólares): `room_type = Entire home/apt` +0,611, `neighbourhood_group = Staten Island` −0,557, `neighbourhood = Tribeca` +0,529. As explicações são associativas, não causais.
 - **Sensibilidades (não substituem o split oficial):** retirar os anúncios com `minimum_nights > 365` do treino não muda o MAE de teste (US$ 57,51 sem esses anúncios contra US$ 57,48 com todos). Dividir por anfitrião (`GroupKFold`) em vez de por linha aumenta o MAE CV de US$ 55,79 para US$ 58,42 (4,7%) nas 5 sementes testadas.
@@ -185,7 +198,7 @@ As decisões de preparação foram reunidas com `Pipeline` e `ColumnTransformer`
 | Inspeção inicial | Dicionário de dados, tipos conceituais, dimensões, ausências e inconsistências |
 | Análise univariada | Estatísticas descritivas e gráficos para variáveis numéricas e categóricas |
 | Análise bivariada/multivariada | Correlações, scatter plots, boxplots conjuntos e preço por categoria |
-| Pré-processamento | Missing values, outliers, encoding, escala e split sem vazamento |
+| Pré-processamento | Missing values, outliers, encoding e escala ajustados no treino de cada fold, após o split |
 | Redução de dimensionalidade | PCA numérico exploratório com interpretação dos componentes |
 | Reprodutibilidade | Código modular em `src/`, testes em `tests/` e pipeline executável por CLI |
 | Modelos APS2 | DummyRegressor, Ridge e RandomForestRegressor; buscas CV de hiperparâmetros; Ridge e floresta também com `log1p(price)` |
@@ -204,17 +217,20 @@ As decisões de preparação foram reunidas com `Pipeline` e `ColumnTransformer`
 
 ## GitHub Pages
 
-A branch `codex/aps2-regression` foi integrada na `main`. O workflow em `.github/workflows/pages.yml` publica o site a cada push na `main`, na URL <https://0tomz.github.io/nyc-airbnb-modelagem/>.
+O site está publicado em <https://0tomz.github.io/nyc-airbnb-modelagem/>. O workflow em `.github/workflows/pages.yml` publica as atualizações enviadas à branch `main`. A publicação pode ser acompanhada na aba **Actions**, no workflow **Deploy static page to GitHub Pages**.
 
-Para habilitar o site, um administrador deve abrir **Settings > Pages**, selecionar **GitHub Actions** em *Build and deployment* e executar **Deploy static page to GitHub Pages** na aba **Actions**. O site anterior da APS1 continua no repositório `Meog38/nyc-airbnb-eda-pipeline`.
+Em um novo repositório, um administrador deve abrir **Settings > Pages**, selecionar **GitHub Actions** em *Build and deployment* e executar o workflow pela aba **Actions**. O site anterior da APS1 continua no repositório `Meog38/nyc-airbnb-eda-pipeline`.
 
 Arquivos necessários para a página:
 
 - `index.html`
 - `styles.css`
+- `presentation.js`
 - `.nojekyll`
 - `reports/figures/*.png`
 - `reports/figures/aps2/*.png`
+- `reports/figures/apresentacao/*.png`
+- `README.md`
 - `Meu_projeto_EDA_ML_revisado (2).ipynb`
 - `APS2_Regressao_NYC_Airbnb.ipynb`
 
