@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NYC Airbnb | EDA Pipeline</title>
-  <meta name="description" content="Análise exploratória e preparação de dados do Airbnb em Nova York para modelagem preditiva de preços.">
+  <title>NYC Airbnb | EDA e Regressão</title>
+  <meta name="description" content="Da análise exploratória à regressão do preço anunciado do Airbnb em Nova York: comparação de modelos, avaliação no teste e explicações SHAP.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#inicio"><span class="brand-mark">NY</span><span>Airbnb EDA</span></a>
+    <a class="brand" href="#inicio"><span class="brand-mark">NY</span><span>Airbnb · EDA e Regressão</span></a>
     <nav aria-label="Seções do relatório">
       <a href="#dados">Dados</a>
       <a href="#distribuicoes">Distribuições</a>
@@ -36,18 +36,19 @@
       <a href="#aps2">APS2</a>
       <a href="#conclusao">Conclusão</a>
     </nav>
-    <a class="download-link" href="Meu_projeto_EDA_ML_revisado%20(2).ipynb" download>Baixar notebook</a>
+    <a class="download-link" href="APS2_Regressao_NYC_Airbnb.ipynb" download>Notebook da regressão</a>
   </header>
 
   <main id="inicio">
     <section class="hero page-shell">
       <div class="hero-copy">
-        <p class="eyebrow">Exploratory data analysis · Machine learning</p>
-        <h1>O que revela o preço de uma estadia em New York City?</h1>
+        <p class="eyebrow">APS1 · Análise exploratória / APS2 · Regressão</p>
+        <h1>Até onde conseguimos prever o preço de uma estadia em Nova York?</h1>
         <p>
-          Uma investigação do mercado Airbnb de 2019 em Nova York, indo da
-          qualidade dos dados às decisões de pré-processamento necessárias para
-          construir um pipeline de regressão confiável.
+          Da auditoria dos dados ao teste de modelos de regressão, investigamos
+          o preço anunciado por noite no Airbnb de 2019. A Random Forest com
+          transformação logarítmica do alvo reduziu o erro médio absoluto em
+          33,1% frente ao Dummy no teste, mas ainda subestima os anúncios mais caros.
         </p>
       </div>
       <div class="hero-art" aria-label="Mapa estilizado dos boroughs de Nova York">
@@ -359,7 +360,7 @@
           <article>
             <span>Escala</span>
             <h3>Escalas comparáveis</h3>
-            <p><code>StandardScaler</code> é aplicado depois de imputação e <code>log1p</code>. Isso torna variáveis como longitude, disponibilidade e contagens comparáveis para modelos futuros.</p>
+            <p><code>StandardScaler</code> é aplicado depois de imputação e <code>log1p</code>. Isso coloca longitude, disponibilidade e contagens em escalas comparáveis para o Ridge. A floresta reutiliza o mesmo pré-processador para manter o protocolo de comparação.</p>
           </article>
         </div>
         <div class="pipeline-steps" aria-label="Arquitetura do pré-processamento">
@@ -416,8 +417,9 @@
           <p>
             A APS2 reutiliza o pré-processador da APS1 e compara modelos por
             validação cruzada de cinco folds no treino. O holdout de teste só foi
-            usado na avaliação final, com MAE medido em dólares. Prazo de
-            entrega: A CONFIRMAR.
+            usado após a seleção do modelo, com MAE medido em dólares.
+            O objetivo é prever o preço anunciado por noite, não ocupação,
+            receita ou o preço efetivamente pago.
           </p>
         </div>
 
@@ -449,6 +451,14 @@
             <p class="eyebrow">Modelos · cinco folds</p>
             <h3>Uma referência simples e dois modelos, com e sem log no alvo.</h3>
             <p>
+              O Dummy prevê a mediana e estabelece uma referência mínima; o
+              Ridge testa uma relação linear com regularização L2; a Random
+              Forest permite relações não lineares e interações entre atributos.
+              Escolhemos o MAE porque expressa o erro na unidade do problema e
+              penaliza extremos menos que o erro quadrático. MAE não é erro
+              percentual nem o erro de todos os anúncios.
+            </p>
+            <p>
               A Random Forest teve o menor MAE entre os modelos iniciais. Com
               <code>log1p(price)</code> no alvo e uma nova busca, o MAE médio de
               validação da floresta caiu de US$ 63,42 para
@@ -474,6 +484,23 @@
               MAE menor indica menor erro absoluto médio; o desvio é entre os
               cinco folds. O teste não participou da escolha de hiperparâmetros.
             </p>
+            <p>
+              O <code>GridSearchCV</code> avaliou 13 valores de
+              <code>alpha</code> do Ridge, de 0,001 a 1.000. Para a floresta,
+              o <code>RandomizedSearchCV</code> avaliou 20 de 144 combinações
+              de profundidade, folha mínima e fração de atributos, mantendo
+              200 árvores. As buscas usaram os mesmos cinco folds embaralhados
+              (<code>random_state=42</code>) e o mesmo MAE. Imputação, escala
+              e encoding foram ajustados dentro de cada fold.
+            </p>
+            <p>
+              A mudança no pipeline foi treinar com <code>log1p(price)</code>,
+              motivada pela cauda longa do alvo observada na EDA. O
+              <code>TransformedTargetRegressor</code> faz a inversão para dólares
+              ao prever. Repetimos as buscas de hiperparâmetros após a mudança:
+              a melhora de 12,0% compara as duas versões ajustadas da floresta,
+              com a mesma métrica e validação, sem consultar o teste.
+            </p>
           </div>
           <figure>
             <img src="reports/figures/aps2/aps2_model_comparison.png" alt="MAE médio na validação cruzada e desvio entre folds para Dummy, Ridge e Random Forest, com e sem log1p no alvo">
@@ -484,7 +511,7 @@
         <div class="aps2-evaluation">
           <figure>
             <img src="reports/figures/aps2/aps2_learning_curve.png" alt="Curva de aprendizado da Random Forest com o alvo transformado">
-            <figcaption>Curva de aprendizado do modelo final: o erro de validação cai de US$ 58,23 para US$ 55,84, e o hiato para o treino continua grande.</figcaption>
+            <figcaption>Curva de aprendizado: entre 6.257 e 31.285 anúncios por fold, o MAE de validação cai de US$ 58,23 para US$ 55,84. No maior tamanho, o MAE de treino é US$ 38,00. O hiato sugere sobreajuste; o pequeno ganho no último trecho não permite concluir que novos dados seriam inúteis.</figcaption>
           </figure>
           <div class="aps2-evaluation-copy">
             <p class="eyebrow">Teste reservado</p>
@@ -499,8 +526,17 @@
             </p>
             <figure>
               <img src="reports/figures/aps2/aps2_test_diagnostics.png" alt="Preço real versus previsto, resíduos versus previsto e distribuição dos resíduos no teste">
-              <figcaption>Diagnósticos do holdout: real × previsto, resíduos e distribuição dos resíduos.</figcaption>
+              <figcaption>Diagnósticos do teste: real × previsto, resíduos × previsto e distribuição dos resíduos. O primeiro painel limita os eixos ao P99 do preço; os demais recortam a visualização dos extremos. Os 196 resíduos fora de P1–P99 continuam incluídos no MAE.</figcaption>
             </figure>
+            <p>
+              Na comparação real × previsto, a subestimação aumenta nos preços
+              altos. Os resíduos (<code>real − previsto</code>) ficam mais
+              dispersos conforme cresce a previsão, e sua distribuição tem
+              cauda positiva: a mediana é −US$ 3,83 e a média, +US$ 23,37.
+              O erro absoluto é de até US$ 25 em 52,5% dos anúncios do teste.
+              Isso impede tratar o MAE geral como garantia de precisão para
+              um anúncio específico.
+            </p>
           </div>
         </div>
 
@@ -515,6 +551,16 @@
               não em dólares. Essas medidas descrevem o modelo, não relações causais.
             </p>
           </div>
+          <p>
+            Por coluna transformada, as três maiores importâncias da floresta
+            são <code>room_type = Entire home/apt</code> (0,230),
+            <code>room_type = Private room</code> (0,149) e
+            <code>longitude</code> (0,147). As duas primeiras representam
+            categorias do mesmo atributo. A agregação abaixo mostra que tipo
+            de acomodação e coordenadas concentram o uso do modelo. A importância
+            de impureza não informa o sentido do efeito e pode favorecer
+            atributos com muitos pontos de corte.
+          </p>
           <div class="aps2-importance-table feature-table-wrap">
             <table>
               <thead>
@@ -541,8 +587,17 @@
                 <tr><td><code>neighbourhood = Tribeca</code></td><td>+0,529</td><td>+70%</td><td>150</td></tr>
               </tbody>
             </table>
-            <p class="caption">Três maiores coeficientes. São colunas 0/1, em escala diferente das numéricas padronizadas; Staten Island e Tribeca são grupos pequenos.</p>
+            <p class="caption">Três coeficientes de maior magnitude, em colunas 0/1. O encoding mantém todas as categorias: um contraste entre categorias do mesmo atributo usa a diferença entre seus coeficientes. Os percentuais isolados acima são exp(coeficiente) − 1, aplicados exatamente a preço + 1; não são prêmios de mercado identificados.</p>
           </div>
+          <p>
+            No Ridge, o sinal positivo de imóvel inteiro e Tribeca, e o negativo
+            de Staten Island, são associações compatíveis com diferenças de
+            preço da EDA. Porém, bairro e borough se sobrepõem às coordenadas,
+            e não é possível mudar uma categoria mantendo todas as demais
+            entradas fixas em qualquer anúncio real. Staten Island (295 casos)
+            e Tribeca (150) também têm amostras pequenas. Esses coeficientes
+            explicam o ajuste do Ridge, sem estimar efeitos causais.
+          </p>
           <div class="aps2-figure-grid">
             <figure>
               <img src="reports/figures/aps2/aps2_forest_importance.png" alt="Importância de atributos da Random Forest agregada por variável original">
@@ -557,44 +612,109 @@
               <figcaption>Média de |SHAP| global, agregada por variável original.</figcaption>
             </figure>
           </div>
+          <p>
+            O SHAP global foi calculado em uma amostra fixa de 250 anúncios do
+            treino. Somamos as contribuições das colunas one-hot de cada
+            variável antes de calcular a média dos valores absolutos.
+            <code>room_type</code> lidera (0,372), seguido de
+            <code>longitude</code> (0,128) e <code>availability_365</code>
+            (0,092). A escala é logarítmica: esses valores não são dólares
+            nem percentuais. Nos casos abaixo, contribuições positivas elevam
+            a saída do modelo em relação ao valor-base; negativas a reduzem.
+          </p>
           <div class="aps2-figure-grid aps2-local-explanations">
             <figure>
               <img src="reports/figures/aps2/aps2_shap_case_1.png" alt="Explicação SHAP de uma previsão subestimada">
-              <figcaption>Maior subestimação: real US$ 9.999, previsto US$ 115.</figcaption>
+              <figcaption>Maior subestimação: real US$ 9.999, previsto US$ 115,27. Imóvel inteiro contribui +0,324; longitude −0,180; disponibilidade zero −0,127; bairro East Harlem −0,050. As contribuições se compensam parcialmente. O SHAP explica a previsão baixa, mas não determina por que o preço anunciado é extremo.</figcaption>
             </figure>
             <figure>
               <img src="reports/figures/aps2/aps2_shap_case_2.png" alt="Explicação SHAP de uma previsão superestimada">
-              <figcaption>Maior superestimação: real US$ 180, previsto US$ 567.</figcaption>
+              <figcaption>Maior superestimação: real US$ 180, previsto US$ 567,16. Imóvel inteiro (+0,407), Tribeca (+0,352), longitude (+0,342) e Manhattan (+0,177) elevam a saída. São sinais geográficos relacionados; as atribuições não provam que o modelo contou a mesma informação várias vezes.</figcaption>
             </figure>
             <figure>
               <img src="reports/figures/aps2/aps2_shap_case_3.png" alt="Explicação SHAP de uma previsão com erro mediano">
-              <figcaption>Erro mediano: real US$ 133, previsto US$ 156.</figcaption>
+              <figcaption>Erro próximo da mediana: real US$ 133, previsto US$ 156,25. Imóvel inteiro (+0,367), latitude (+0,087) e Manhattan (+0,073) elevam a saída; estadia mínima de 30 noites (−0,161) reduz. A associação com estadias longas é uma leitura do modelo, sem demonstrar desconto causal.</figcaption>
             </figure>
           </div>
         </div>
 
         <div class="aps2-critical">
           <article>
-            <span>Limitações</span>
+            <h3>Limitações do modelo</h3>
             <p>
-              Do modelo: a previsão é um valor único, sem intervalo, e o MAE de
-              seleção (US$ 55,81) fica abaixo do teste (US$ 57,53) por
-              otimismo de seleção. Dos dados: avaliações só existem depois que o
-              anúncio funciona (anúncios novos ficam sem esse sinal) e anúncios
-              vizinhos não são independentes. A divisão por anfitrião (sensibilidade)
-              dá MAE 4,7% maior; remover estadias acima de 365 noites não muda o resultado.
+              <strong>1. Ausência de incerteza por anúncio.</strong> A floresta
+              produz um valor pontual, sem intervalo de previsão. O MAE geral
+              não informa a confiabilidade de cada sugestão. Estimar quantis
+              seria uma extensão a avaliar, conforme Meinshausen (2006).
+            </p>
+            <p>
+              <strong>2. Otimismo na seleção.</strong> Os mesmos folds serviram
+              para selecionar hiperparâmetros e reportar o MAE CV, o que pode
+              produzir uma estimativa otimista (Cawley e Talbot, 2010).
+              A diferença de US$ 1,72 entre CV e teste, sozinha, não mede esse
+              viés. A busca da floresta também foi parcial: 20 de 144 combinações.
             </p>
           </article>
           <article>
-            <span>Operação e manutenção</span>
+            <h3>Limitações dos dados</h3>
             <p>
-              Versionar o pipeline completo com versões de bibliotecas, dados de
-              referência e métricas por faixa de preço, e validar o esquema de entrada.
-              Monitorar a mudança das entradas e do preço e o MAE por faixa, com
-              gatilho de retreinamento combinado com o negócio.
+              <strong>1. Informação disponível na decisão.</strong> Avaliações
+              ainda não existem no cadastro de um anúncio novo. Para esse uso,
+              seria necessário reavaliar o modelo com atributos disponíveis
+              naquele momento (Kaufman et al., 2012). O erro maior nos anúncios
+              sem avaliações não identifica, sozinho, a causa dessa diferença.
+            </p>
+            <p>
+              <strong>2. Dependência espacial.</strong> Vizinhos podem aparecer
+              no treino e na validação, favorecendo a previsão em regiões já
+              representadas. Não houve validação por blocos geográficos, então
+              não medimos a generalização para locais novos (Roberts et al., 2017).
+            </p>
+          </article>
+          <article>
+            <h3>Operacionalização</h3>
+            <p>
+              Versionar pré-processador e modelo em um único artefato, junto
+              das versões de bibliotecas, hash dos dados, sementes,
+              hiperparâmetros e métricas por faixa. Validar colunas, tipos e
+              valores permitidos antes da previsão. Essa é uma proposta de
+              implantação; o projeto entrega a avaliação experimental, sem
+              serviço de inferência em produção (Sculley et al., 2015).
+            </p>
+          </article>
+          <article>
+            <h3>Manutenção</h3>
+            <p>
+              Monitorar mudanças nas entradas e, quando houver novos preços
+              de referência, o MAE geral e por faixa de preço. Definir limites
+              de alerta e critérios de retreinamento e comparar o novo modelo
+              com a versão em uso antes de substituí-la. Dados de 2019 não
+              demonstram desempenho no mercado atual (Gama et al., 2014).
             </p>
           </article>
         </div>
+        <p class="aps2-sensitivity">
+          <strong>Sensibilidades complementares.</strong> No treino, separar os
+          folds por anfitrião elevou o MAE de US$ 55,79 para US$ 58,42 (4,7%),
+          com hiperparâmetros fixos e cinco sementes. É uma evidência de
+          sensibilidade à divisão, sem quantificar exatamente o erro futuro de
+          anfitriões novos. Remover os 12 casos com estadia mínima acima de um
+          ano do treino mudou o MAE médio de teste de US$ 57,48 para US$ 57,51.
+          Essas análises não alteraram o modelo escolhido.
+        </p>
+
+        <details class="aps2-references">
+          <summary>Referências da modelagem e da discussão crítica</summary>
+          <ul>
+            <li><a href="https://www.jmlr.org/papers/v11/cawley10a.html">Cawley e Talbot (2010). On Over-fitting in Model Selection and Subsequent Selection Bias in Performance Evaluation.</a></li>
+            <li><a href="https://www.jmlr.org/papers/v7/meinshausen06a.html">Meinshausen (2006). Quantile Regression Forests.</a></li>
+            <li><a href="https://doi.org/10.1145/2382577.2382579">Kaufman et al. (2012). Leakage in Data Mining: Formulation, Detection, and Avoidance.</a></li>
+            <li><a href="https://doi.org/10.1111/ecog.02881">Roberts et al. (2017). Cross-validation Strategies for Data with Temporal, Spatial, Hierarchical, or Phylogenetic Structure.</a></li>
+            <li><a href="https://proceedings.neurips.cc/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf">Sculley et al. (2015). Hidden Technical Debt in Machine Learning Systems.</a></li>
+            <li><a href="https://doi.org/10.1145/2523813">Gama et al. (2014). A Survey on Concept Drift Adaptation.</a></li>
+            <li><a href="https://shap.readthedocs.io/en/latest/generated/shap.TreeExplainer.html">SHAP. Documentação do TreeExplainer.</a> As referências completas das demais análises estão no notebook.</li>
+          </ul>
+        </details>
 
         <div class="aps2-notebook-link">
           <a class="download-link" href="APS2_Regressao_NYC_Airbnb.ipynb" download>Baixar notebook completo da APS2</a>
@@ -607,21 +727,30 @@
       <div class="page-shell conclusion">
         <div>
           <p class="eyebrow">Síntese</p>
-          <h2>O que fica para a modelagem.</h2>
+          <h2>O que a regressão mostrou — e onde ainda erra.</h2>
         </div>
         <div>
           <p>
-            O preço dos anúncios é assimétrico e depende de combinações entre
-            geografia, tipo de acomodação e contexto do anúncio. As variáveis
-            numéricas isoladas têm baixa correlação linear com o alvo, mas ainda
-            carregam sinais úteis quando combinadas com categorias e
-            transformações adequadas.
+            A regressão foi implementada e avaliada. Entre Dummy, Ridge e
+            Random Forest, a floresta com <code>log1p(price)</code> teve o menor
+            MAE na validação cruzada: US$ 55,81. Nos 9.777 anúncios reservados
+            para teste, o MAE foi US$ 57,53, contra US$ 85,93 do Dummy:
+            redução de 33,1% no erro absoluto médio.
           </p>
           <p>
-            O resultado é um pipeline reprodutível, com separação treino/teste
-            antes de qualquer ajuste, imputação coerente com o significado dos
-            dados, tratamento conservador de extremos e encoding preparado para
-            categorias novas. Na APS2, esse pré-processador foi conectado a modelos de regressão e avaliado por erro em dólares (seção anterior).
+            Transformar o alvo e refazer a seleção de hiperparâmetros reduziu
+            o MAE CV da floresta em 12,0%. Tipo de acomodação e localização
+            aparecem entre os principais sinais, tanto nas importâncias
+            quanto no SHAP. A EDA orientou essas decisões, e a avaliação
+            quantificou o ganho frente à referência simples.
+          </p>
+          <p>
+            Esse ganho não resolve todos os perfis: no decil de maior preço,
+            o MAE chega a US$ 306,67, com forte subestimação. O resultado
+            sustenta uma referência experimental para anúncios semelhantes aos
+            da base, sem validar precificação automática no mercado atual.
+            Os próximos passos são avaliar intervalos de previsão, atributos
+            disponíveis no cadastro e validação por blocos geográficos.
           </p>
         </div>
       </div>
@@ -629,12 +758,13 @@
         <span>Maria Eduarda Oliveira Galdino · Tomaz Santos Almeida</span>
         <a href="https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data">Fonte dos dados</a>
         <a href="README.md">Documentação técnica</a>
+        <a href="Meu_projeto_EDA_ML_revisado%20(2).ipynb" download>Notebook da EDA · APS1</a>
       </div>
     </section>
   </main>
 
   <footer class="footer page-shell">
-    <span>NYC Airbnb EDA Pipeline</span>
+    <span>NYC Airbnb · EDA e Regressão</span>
     <span>Portfolio de dados · Python · scikit-learn</span>
   </footer>
 </body>

@@ -620,7 +620,14 @@ figcaption {
   border-top: 3px solid var(--blue);
   background: var(--paper);
 }
+.aps2-critical h3 { font-size: 22px; }
 .aps2-critical p { margin: 0; font-size: 14px; }
+.aps2-critical p + p { margin-top: 18px; }
+.aps2-local-explanations figcaption { font-size: 12px; line-height: 1.7; }
+.aps2-sensitivity { margin-top: 28px; font-size: 15px; }
+.aps2-references { margin-top: 28px; padding: 20px; border: 1px solid var(--line); }
+.aps2-references summary { cursor: pointer; font-weight: 600; }
+.aps2-references li { margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.6; }
 .aps2-notebook-link {
   display: flex;
   align-items: center;

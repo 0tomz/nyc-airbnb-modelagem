@@ -7,7 +7,7 @@ Projeto de Machine Learning em duas etapas sobre o dataset **New York City Airbn
 - **Dataset:** New York City Airbnb Open Data.
 - **Problema:** regressão para previsão de `price`, o preço anunciado por noite em USD.
 - **Autores:** Maria Eduarda Oliveira Galdino e Tomaz Santos Almeida.
-- **Prazo de entrega da APS2:** **A CONFIRMAR** (as orientações da disciplina estão em `Projeto_de_Machine_Learning (1).ipynb`; confira a data lá e no formulário de entrega).
+- **Prazo da APS2 na rubrica:** **26/10**, conforme `Projeto_de_Machine_Learning (1).ipynb` (o enunciado não informa o ano).
 - **Site do projeto (APS1 e APS2):** <https://0tomz.github.io/nyc-airbnb-modelagem/>.
 - **Site anterior (APS1):** <https://meog38.github.io/nyc-airbnb-eda-pipeline/>.
 - **Relatório web:** `index.html` (APS1 e APS2).
@@ -133,7 +133,7 @@ Métrica principal: **MAE em dólares**. Escolha de modelo e de hiperparâmetros
 - **Teste:** MAE de **US$ 57,53**, contra US$ 85,93 do Dummy (33,1% menos erro). MAE CV na seleção: US$ 55,81.
 - **Onde erra:** decil de maior preço com MAE de US$ 306,67 e resíduo médio `real − previsto` de +US$ 303,48 (subestima). Os 62 anúncios de US$ 1.000 ou mais respondem por 23,5% do erro absoluto. Anúncios sem avaliações têm MAE de US$ 93,34, contra US$ 48,35 dos demais.
 - **Interpretação:** `room_type` e localização dominam nos três métodos. Importância da floresta (agregada): `room_type` 0,399, `longitude` 0,147, `latitude` 0,104, `neighbourhood` 0,070. SHAP médio: `room_type` 0,372, `longitude` 0,128, `availability_365` 0,092, `neighbourhood_group` 0,086. Ridge + log, maiores coeficientes (em `log1p(price)`, não em dólares): `room_type = Entire home/apt` +0,611, `neighbourhood_group = Staten Island` −0,557, `neighbourhood = Tribeca` +0,529. As explicações são associativas, não causais.
-- **Sensibilidades (não substituem o split oficial):** retirar os anúncios com `minimum_nights > 365` do treino não muda o MAE de teste (US$ 57,48 contra US$ 57,51). Dividir por anfitrião (`GroupKFold`) em vez de por linha aumenta o MAE CV de US$ 55,79 para US$ 58,42 (4,7%) nas 5 sementes testadas.
+- **Sensibilidades (não substituem o split oficial):** retirar os anúncios com `minimum_nights > 365` do treino não muda o MAE de teste (US$ 57,51 sem esses anúncios contra US$ 57,48 com todos). Dividir por anfitrião (`GroupKFold`) em vez de por linha aumenta o MAE CV de US$ 55,79 para US$ 58,42 (4,7%) nas 5 sementes testadas.
 
 ## Pré-Processamento
 
@@ -173,7 +173,7 @@ As decisões de preparação foram reunidas com `Pipeline` e `ColumnTransformer`
 - A validação por blocos geográficos não foi feita.
 - A busca da floresta é aleatória (20 de 144 combinações); a validação cruzada não é aninhada.
 - O notebook demora porque as buscas e o SHAP rodam do zero a cada execução.
-- Prazo de entrega: **A CONFIRMAR**.
+- A data efetiva de submissão deve ser preenchida pelo grupo; ela não é a data de elaboração do notebook nem o prazo da rubrica (26/10).
 
 ## GitHub Pages
 
